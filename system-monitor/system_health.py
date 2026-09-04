@@ -14,18 +14,43 @@ print(f"Memory Usage : {memory.percent}%")
 print(f"Disk Usage   : {disk.percent}%")
 
 findings = []
+severity = []
 
-if cpu > 80:
+if cpu > 90:
+    findings.append("CPU usage is critically high")
+    severity.append("CRITICAL")
+
+elif cpu > 80:
     findings.append("CPU usage is above 80%")
+    severity.append("HIGH")
 
-if memory.percent > 80:
+if memory.percent > 90:
+    findings.append("Memory usage is critically high")
+    severity.append("CRITICAL")
+
+elif memory.percent > 80:
     findings.append("Memory usage is above 80%")
+    severity.append("HIGH")
 
-if disk.percent > 90:
+if disk.percent > 95:
+    findings.append("Disk usage is critically high")
+    severity.append("CRITICAL")
+
+elif disk.percent > 90:
     findings.append("Disk usage is above 90%")
+    severity.append("HIGH")
+
+if "CRITICAL" in severity:
+    overall_severity = "CRITICAL"
+
+elif "HIGH" in severity:
+    overall_severity = "HIGH"
+
+else:
+    overall_severity = "NORMAL"
 
 if findings:
-    print("Status      : WARNING")
+    print(f"Status      : WARNING ({overall_severity})")
 else:
     print("Status      : HEALTHY")
 
@@ -38,6 +63,16 @@ if findings:
 else:
     print("\n✓ No resource threshold violations detected.")
 
+print("\nRecommended Investigation:")
+
+if memory.percent > 80:
+    print("- Investigate memory-consuming processes")
+
+if cpu > 80:
+    print("- Investigate CPU-consuming processes")
+
+if disk.percent > 90:
+    print("- Investigate disk usage and available space")
 
 processes = []
 
