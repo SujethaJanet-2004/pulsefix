@@ -65,6 +65,17 @@ confirm the root cause of the reported application slowdown.
 
 Further investigation is required.
 
+### Recommended Investigation
+
+Based on the detected high memory utilization, PulseFix recommends:
+
+1. Investigate memory-consuming processes.
+2. Determine whether the affected application is consuming excessive resources.
+3. Continue investigation using application and system logs.
+
+These recommendations are based on threshold-based diagnostics
+and do not represent a confirmed root cause.
+
 ## Root Cause
 
 Not yet determined.
