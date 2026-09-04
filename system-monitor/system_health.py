@@ -1,4 +1,5 @@
 import psutil
+import time
 
 cpu = psutil.cpu_percent(interval=1)
 memory = psutil.virtual_memory()
@@ -20,12 +21,54 @@ else:
 
 processes = []
 
-for process in psutil.process_iter(["name", "memory_percent"]):
-    processes.append(process.info)
+# Take the first CPU measurement
+for process in psutil.process_iter(
+    ["pid", "name", "memory_percent", "status"]
+):
+    try:
+        process.cpu_percent(None)
+        processes.append(process)
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        pass
 
-processes.sort(key=lambda process: process["memory_percent"], reverse=True)
+# Wait so psutil can measure CPU activity
+time.sleep(1)
 
-print("\nTop 3 Memory-Consuming Processes:")
+# Take the second measurement
+process_data = []
 
-for process in processes[:3]:
-    print(f"{process['name']} : {process['memory_percent']:.2f}%")
+for process in processes:
+    try:
+        cpu = process.cpu_percent(None)
+
+        if process.name() == "System Idle Process":
+            continue
+
+        process_data.append({
+            "pid": process.pid,
+            "name": process.name(),
+            "cpu_percent": cpu,
+            "memory_percent": process.memory_percent(),
+            "status": process.status()
+        })
+
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        pass
+
+# Sort by CPU usage
+process_data.sort(
+    key=lambda process: process["cpu_percent"],
+    reverse=True
+)
+
+print("\nTop 3 CPU-Consuming Processes:")
+
+for process in process_data[:3]:
+    print(
+        f"{process['pid']} | "
+        f"{process['name']} | "
+        f"CPU: {process['cpu_percent']:.2f}% | "
+        f"Memory: {process['memory_percent']:.2f}% | "
+        f"Status: {process['status']}"
+    ) 
+
