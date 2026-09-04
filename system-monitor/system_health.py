@@ -13,10 +13,30 @@ print(f"CPU Usage    : {cpu}%")
 print(f"Memory Usage : {memory.percent}%")
 print(f"Disk Usage   : {disk.percent}%")
 
-if cpu > 80 or memory.percent > 80 or disk.percent > 90:
+findings = []
+
+if cpu > 80:
+    findings.append("CPU usage is above 80%")
+
+if memory.percent > 80:
+    findings.append("Memory usage is above 80%")
+
+if disk.percent > 90:
+    findings.append("Disk usage is above 90%")
+
+if findings:
     print("Status      : WARNING")
 else:
     print("Status      : HEALTHY")
+
+
+if findings:
+    print("\n⚠ Diagnostic Findings:")
+
+    for finding in findings:
+        print(f"- {finding}")
+else:
+    print("\n✓ No resource threshold violations detected.")
 
 
 processes = []

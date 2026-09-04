@@ -24,8 +24,8 @@ PulseFix system diagnostics were used to inspect:
 
 ### System Health
 
-- CPU Usage: 56.6%
-- Memory Usage: 85.2%
+- CPU Usage: 67.3%
+- Memory Usage: 85.4%
 - Disk Usage: 83.6%
 - System Status: WARNING
 
@@ -33,23 +33,32 @@ PulseFix system diagnostics were used to inspect:
 
 Top CPU-consuming processes:
 
-1. python.exe — 71.10% CPU
-2. svchost.exe — 38.60% CPU
-3. svchost.exe — 21.70% CPU
+1. python.exe — 66.90% CPU — 0.23% memory — Running
+2. svchost.exe — 45.40% CPU — 0.25% memory — Running
+3. Code.exe — 21.80% CPU — 4.61% memory — Running
 
 ### Observations
 
-- System memory utilization is above the configured warning threshold.
-- Multiple processes showed significant CPU activity.
-- PulseFix successfully collected process-level diagnostic information.
+- Memory utilization reached 85.2%, exceeding the configured warning threshold.
+- The highest observed CPU-consuming process was `python.exe` at 71.10%.
+- Two `svchost.exe` processes also showed notable CPU activity.
+- PulseFix successfully collected PID, process name, CPU usage,
+  memory usage, and process status for running processes.
 
 ## Findings
 
-PulseFix identified elevated memory utilization and
-significant CPU activity as areas requiring further investigation.
+PulseFix detected elevated memory utilization:
 
-These observations are diagnostic evidence only.
-No root cause has been confirmed yet.
+- Memory usage: 85.4%
+- Warning threshold: 80%
+
+The process investigation also identified python.exe
+as the highest CPU-consuming process at 66.90%.
+
+These findings provide diagnostic evidence but do not
+confirm the root cause of the reported application slowdown.
+
+Further investigation is required.
 
 ## Root Cause
 
