@@ -91,6 +91,7 @@ time.sleep(1)
 
 # Take the second measurement
 process_data = []
+process_findings = []
 
 for process in processes:
     try:
@@ -106,6 +107,38 @@ for process in processes:
             "memory_percent": process.memory_percent(),
             "status": process.status()
         })
+
+        if cpu > 80:
+            process_findings.append({
+                "pid": process.pid,
+                "name": process.name(),
+                "issue": "High CPU usage",
+                "severity": "CRITICAL"
+            })
+
+        elif cpu > 50:
+            process_findings.append({
+                "pid": process.pid,
+                "name": process.name(),
+                "issue": "Elevated CPU usage",
+                "severity": "HIGH"
+            })
+
+        if process.memory_percent() > 10:
+            process_findings.append({
+                "pid": process.pid,
+                "name": process.name(),
+                "issue": "Critical memory usage",
+                "severity": "CRITICAL"
+            })
+
+        elif process.memory_percent() > 5:
+            process_findings.append({
+                "pid": process.pid,
+                "name": process.name(),
+                "issue": "High memory usage",
+                "severity": "HIGH"
+            })
 
     except (psutil.NoSuchProcess, psutil.AccessDenied):
         pass
@@ -144,3 +177,17 @@ for process in process_data[:3]:
         f"Status: {process['status']}"
     ) 
 
+print("\nProcess Risk Findings:")
+
+if process_findings:
+
+    for finding in process_findings:
+        print(
+            f"{finding['pid']} | "
+            f"{finding['name']} | "
+            f"{finding['issue']} | "
+            f"Severity: {finding['severity']}"
+        )
+
+else:
+    print("✓ No process-level resource risks detected.")
