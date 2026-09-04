@@ -116,6 +116,23 @@ process_data.sort(
     reverse=True
 )
 
+memory_processes = sorted(
+    process_data,
+    key=lambda process: process["memory_percent"],
+    reverse=True
+)
+
+print("\nTop 3 Memory-Consuming Processes:")
+
+for process in memory_processes[:3]:
+    print(
+        f"{process['pid']} | "
+        f"{process['name']} | "
+        f"CPU: {process['cpu_percent']:.2f}% | "
+        f"Memory: {process['memory_percent']:.2f}% | "
+        f"Status: {process['status']}"
+    )
+
 print("\nTop 3 CPU-Consuming Processes:")
 
 for process in process_data[:3]:
