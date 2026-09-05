@@ -21,21 +21,29 @@ PulseFix system diagnostics were used to inspect:
 - Top CPU-consuming processes
 - Top memory-consuming processes
 - Process-level resource risks
-- Diagnostic snapshot
+- Diagnostic snapshots
+- Resource trends between diagnostic snapshots
 
 ## Evidence
 
 ### System Health
 
-- Timestamp: 2026-09-04 19:45:15
+Previous diagnostic snapshot:
+
 - CPU Usage: 55.0%
 - Memory Usage: 85.5%
 - Disk Usage: 83.6%
 - System Status: WARNING (HIGH)
 
+Current diagnostic snapshot:
+
+- CPU Usage: 46.0%
+- Memory Usage: 89.7%
+- Disk Usage: 82.5%
+
 ### CPU Process Investigation
 
-Top CPU-consuming processes:
+Top CPU-consuming processes from the previous diagnostic run:
 
 1. `python.exe` — 67.90% CPU — 0.24% memory — Running
 2. `svchost.exe` — 36.40% CPU — 0.27% memory — Running
@@ -43,7 +51,7 @@ Top CPU-consuming processes:
 
 ### Memory Process Investigation
 
-Top memory-consuming processes:
+Top memory-consuming processes from the previous diagnostic run:
 
 1. `chrome.exe` — 5.93% memory — 0.30% CPU — Running
 2. `Code.exe` — 5.21% memory — 26.20% CPU — Running
@@ -51,36 +59,36 @@ Top memory-consuming processes:
 
 ## Observations
 
-- Memory utilization reached 85.5%, exceeding the configured system-level warning threshold of 80%.
-- CPU utilization was 55.0%, which remained below the system-level HIGH threshold of 80%.
-- `python.exe` was the highest observed CPU-consuming process at 67.90%.
-- `svchost.exe` showed elevated CPU activity at 36.40%.
-- `Code.exe` showed 26.20% CPU usage and 5.21% memory usage.
-- `chrome.exe` was the highest individual memory-consuming process at 5.93%.
-- PulseFix successfully collected PID, process name, CPU usage, memory usage, and process status for running processes.
+- Previous system memory utilization was 85.5%, exceeding the configured system-level warning threshold of 80%.
+- Current system memory utilization increased to 89.7%.
+- CPU utilization decreased from 55.0% to 46.0%.
+- Disk utilization decreased from 83.6% to 82.5%.
+- The previous process investigation identified `python.exe` as the highest observed CPU-consuming process at 67.90%.
+- `chrome.exe` was the highest individual memory-consuming process at 5.93% during the previous diagnostic run.
 - CPU and memory investigations were performed separately to avoid assuming that the highest CPU-consuming process was also responsible for the overall memory pressure.
+- PulseFix preserved diagnostic evidence through timestamped snapshots.
 
 ## Findings
 
-PulseFix detected elevated system memory utilization:
+PulseFix previously detected elevated system memory utilization:
 
-- Memory usage: 85.5%
+- Previous memory usage: 85.5%
 - Warning threshold: 80%
 - Severity: HIGH
 
-The CPU process investigation identified:
+The latest diagnostic comparison shows:
 
-- `python.exe` at 67.90% CPU → HIGH
-- No other top CPU process exceeded the configured process-level HIGH threshold of 50%.
+- CPU decreased by 9.0 percentage points.
+- Memory increased by 4.2 percentage points.
+- Disk decreased by 1.1 percentage points.
 
-The memory process investigation identified:
+Memory utilization remains the primary system-level resource concern because it increased from 85.5% to 89.7% and remains above the configured warning threshold.
 
-- `chrome.exe` at 5.93% memory → HIGH
-- `Code.exe` at 5.21% memory → HIGH
+However, the 4.2 percentage-point increase does not exceed the configured threshold for a significant memory trend.
 
-The top individual memory-consuming processes did not account for the majority of the overall system memory utilization.
+CPU and disk utilization decreased between the two diagnostic runs.
 
-Therefore, the available process-level evidence does not explain the complete system memory pressure.
+The available evidence therefore does not establish a significant overall worsening or improvement in system resource utilization.
 
 These findings provide diagnostic evidence but do not confirm the root cause of the reported application slowdown.
 
@@ -91,8 +99,8 @@ Further investigation is required.
 Based on the detected system and process-level findings, PulseFix recommends:
 
 1. Investigate memory-consuming processes and determine what is contributing to the remaining system memory utilization.
-2. Investigate `python.exe` because it exceeded the configured process-level CPU threshold.
-3. Investigate `chrome.exe` and `Code.exe` because they exceeded the configured process-level memory threshold.
+2. Investigate `python.exe` because it exceeded the configured process-level CPU threshold during the previous diagnostic run.
+3. Investigate `chrome.exe` and `Code.exe` because they exceeded the configured process-level memory threshold during the previous diagnostic run.
 4. Review system and application logs for additional evidence.
 5. Determine whether the affected application is experiencing resource contention.
 6. Continue monitoring system and process metrics to identify persistent resource issues.
@@ -112,7 +120,7 @@ PulseFix evaluates individual processes against configured CPU and memory thresh
 
 ### Detected Process Risks
 
-Based on the current diagnostic run:
+Based on the previous diagnostic run:
 
 - `python.exe` — 67.90% CPU → HIGH
 - `chrome.exe` — 5.93% memory → HIGH
@@ -126,12 +134,48 @@ The process-level threshold violations do not independently establish that any p
 
 Additional evidence from system logs, application logs, networking, and other diagnostic sources is required before determining the root cause.
 
+## Snapshot Comparison
+
+PulseFix compared two diagnostic snapshots to identify changes in system resource utilization.
+
+| Metric | Previous | Current | Change |
+|---|---:|---:|---:|
+| CPU | 55.0% | 46.0% | -9.0 pp |
+| Memory | 85.5% | 89.7% | +4.2 pp |
+| Disk | 83.6% | 82.5% | -1.1 pp |
+
+### Trend Assessment
+
+- **CPU:** Decreased by 9.0 percentage points.
+- **Memory:** Increased by 4.2 percentage points.
+- **Disk:** Decreased by 1.1 percentage points.
+- **Overall:** No significant overall resource trend detected.
+
+### Trend Thresholds
+
+For snapshot comparison:
+
+- Memory increase > 5 percentage points → Significant increase
+- CPU increase > 10 percentage points → Significant increase
+- Disk increase > 5 percentage points → Significant increase
+
+### Interpretation
+
+Memory utilization increased and remains above the configured warning threshold.
+
+However, the increase of 4.2 percentage points does not exceed the configured threshold for a significant memory trend.
+
+CPU and disk utilization decreased between the two snapshots.
+
+The comparison provides temporal evidence about changes in system resource utilization but does not establish the root cause of the reported application slowdown.
+
 ## Diagnostic Snapshot
 
-PulseFix generated a timestamped diagnostic snapshot for this investigation.
+PulseFix generates timestamped diagnostic snapshots for each investigation run.
 
-The snapshot preserves:
+Each snapshot preserves:
 
+- Timestamp
 - System resource utilization
 - System severity
 - Diagnostic findings
@@ -140,11 +184,7 @@ The snapshot preserves:
 - Top memory-consuming processes
 - Process-level risk findings
 
-Snapshot:
-
-`snapshot_2026-09-04_194515.txt`
-
-The snapshot represents the system state observed during the diagnostic run.
+The snapshots allow PulseFix to compare system conditions across diagnostic runs and identify potential resource trends.
 
 ## Root Cause
 
@@ -157,4 +197,5 @@ Not yet resolved.
 ## Status
 
 Investigating
+
 
